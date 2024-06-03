@@ -1,0 +1,6 @@
+@NeoImobSystem_API_HostAddress = http://localhost:5029
+
+GET {{NeoImobSystem_API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
