@@ -81,25 +81,47 @@ namespace NeoImobSystem_API.Controllers
             if (usuario == null)
                 return NotFound("Não existe esse usuário");
 
-            //var contrato = await _context.Contratos.FirstOrDefaultAsync(u => u.Id == request.ContratoId);
-            //if (contrato == null)
-            //    return NotFound("Não existe esse contrato");
 
-            var novaCasa = new Casa
+            if (request.ContratoId != null)
             {
-                Endereco = request.Endereco,
-                NumeroSalas = request.NumeroSalas,
-                Tipo = request.Tipo,
-                CEP = request.CEP,
-                //Contrato = contrato,
-                Usuario = usuario,
-                UsuarioId = request.UsuarioId,
-            };
+                var contrato = await _context.Contratos.FirstOrDefaultAsync(u => u.Id == request.ContratoId);
+                if (contrato == null)
+                    return BadRequest("Contrato não encontrado.");
 
-            _context.Casas.Add(novaCasa);
-            await _context.SaveChangesAsync();
+                var novaCasa = new Casa
+                {
+                    Endereco = request.Endereco,
+                    NumeroSalas = request.NumeroSalas,
+                    Tipo = request.Tipo,
+                    CEP = request.CEP,
+                    Contrato = contrato,
+                    Usuario = usuario,
+                };
 
-            return CreatedAtAction("ChecarCasaPorId", new { id = novaCasa.Id }, novaCasa);
+                _context.Casas.Add(novaCasa);
+
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction("ChecarCasaPorId", new { id = novaCasa.Id }, novaCasa);
+            }
+            else
+            {
+
+                var novaCasa = new Casa
+                {
+                    Endereco = request.Endereco,
+                    NumeroSalas = request.NumeroSalas,
+                    Tipo = request.Tipo,
+                    CEP = request.CEP,
+                    Usuario = usuario,
+                };
+
+                _context.Casas.Add(novaCasa);
+
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction("ChecarCasaPorId", new { id = novaCasa.Id }, novaCasa);
+            }
         }
 
         // DELETE: api/Casa/5
