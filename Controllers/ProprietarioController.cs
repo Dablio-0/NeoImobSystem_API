@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,12 +25,14 @@ namespace NeoImobSystem_API.Controllers
 
         // GET: api/Proprietario
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Proprietario>>> ListagemProprietarios()
         {
             return await _context.Proprietarios.ToListAsync();
         }
 
         // GET: api/Proprietario/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<Proprietario>> ChecarProprietarioPorId(uint id)
         {
@@ -44,7 +47,7 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // PUT: api/Proprietario/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> EditarProprietario(uint id, Proprietario proprietario)
         {
@@ -75,6 +78,7 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // POST: api/Proprietario
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Proprietario>> CriarProprietario(CriarProprietarioDTO request)
         {
@@ -109,6 +113,7 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // DELETE: api/Proprietario/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> ExcluirProprietario(uint id)
         {

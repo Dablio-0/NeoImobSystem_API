@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // GET: api/Inquilino
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Inquilino>>> ListagemInquilinos()
         {
@@ -33,6 +35,7 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // GET: api/Inquilino/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<Inquilino>> ChecarInquilinoPorId(uint id)
         {
@@ -47,7 +50,7 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // PUT: api/Inquilino/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> EditarInquilino(uint id, Inquilino inquilino)
         {
@@ -78,6 +81,8 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // POST: api/Inquilino
+
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Inquilino>> CriarInquilino(CriarInquilinoDTO request)
         {
@@ -112,6 +117,7 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // DELETE: api/Inquilino/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> ExcluirInquilino(uint id)
         {
