@@ -61,8 +61,42 @@ namespace NeoImobSystem_API.Controllers
             return Ok(usuario);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> EditarUsuario(uint id, Inquilino usuario)
+        {
+            if (id != usuario.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(usuario).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!VerificaUsuario(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        private bool VerificaUsuario(uint id)
+        {
+            return _context.Usuarios.Any(u => u.Id == id);
+        }
+
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDTO request)
+        public async Task<ActionResult> Login([FromBody] LoginDTO request)
         {
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == request.Email && u.Senha == request.Senha);
 
@@ -96,6 +130,13 @@ namespace NeoImobSystem_API.Controllers
             // Nada específico a fazer no servidor para o logout com JWT.
             // O cliente deve simplesmente remover o token do armazenamento local.
             return Ok("Logout bem-sucedido. Remova o token do cliente.");
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<Usuario>> ResetarSenha(string Email)
+        {
+
+            return Ok();
         }
     }
 }

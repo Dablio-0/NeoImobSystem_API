@@ -24,7 +24,7 @@ namespace NeoImobSystem_API.Controllers
 
         // GET: api/Contrato
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Contrato>>> GetContratos()
+        public async Task<ActionResult<IEnumerable<Contrato>>> ListagemContratos()
         {
             return await _context.Contratos
                 .Include(c => c.ContratoInquilinos)
@@ -34,7 +34,7 @@ namespace NeoImobSystem_API.Controllers
 
         // GET: api/Contrato/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Contrato>> GetContrato(uint id)
+        public async Task<ActionResult<Contrato>> ChecarContratoPorId(uint id)
         {
             var contrato = await _context.Contratos.FindAsync(id);
 
@@ -49,7 +49,7 @@ namespace NeoImobSystem_API.Controllers
         // PUT: api/Contrato/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutContrato(uint id, Contrato contrato)
+        public async Task<IActionResult> EditarContrato(uint id, Contrato contrato)
         {
             if (id != contrato.Id)
             {
@@ -64,7 +64,7 @@ namespace NeoImobSystem_API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ContratoExists(id))
+                if (!VerificaContrato(id))
                 {
                     return NotFound();
                 }
@@ -80,7 +80,7 @@ namespace NeoImobSystem_API.Controllers
         // POST: api/Contrato
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Contrato>> PostContrato(CriarContratoDTO request)
+        public async Task<ActionResult<Contrato>> CriarContrato(CriarContratoDTO request)
         {
             if (request == null)
             {
@@ -150,14 +150,14 @@ namespace NeoImobSystem_API.Controllers
             _context.Contratos.Add(contrato);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetContrato", new { id = contrato.Id }, contrato);
+            return CreatedAtAction("ChecarContratoPorId", new { id = contrato.Id }, contrato);
         }
 
 
 
         // DELETE: api/Contrato/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteContrato(uint id)
+        public async Task<IActionResult> ExcluirContrato(uint id)
         {
             var contrato = await _context.Contratos.FindAsync(id);
             if (contrato == null)
@@ -171,7 +171,7 @@ namespace NeoImobSystem_API.Controllers
             return NoContent();
         }
 
-        private bool ContratoExists(uint id)
+        private bool VerificaContrato(uint id)
         {
             return _context.Contratos.Any(e => e.Id == id);
         }

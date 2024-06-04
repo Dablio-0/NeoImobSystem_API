@@ -21,7 +21,7 @@ namespace NeoImobSystem_API.Controllers
         // GET: api/Casa
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Casa>>> PegarTodasCasas()
+        public async Task<ActionResult<IEnumerable<Casa>>> ListagemCasas()
         {
             return await _context.Casas
                 .Include(c => c.CasaProprietarios)
@@ -47,7 +47,7 @@ namespace NeoImobSystem_API.Controllers
         // PUT: api/Casa/5
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditarCasaPorId(uint id, Casa casa)
+        public async Task<IActionResult> EditarCasa(uint id, Casa casa)
         {
             if (id != casa.Id)
             {
@@ -62,7 +62,7 @@ namespace NeoImobSystem_API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!VerificaCasaExiste(id))
+                if (!VerificaCasa(id))
                 {
                     return NotFound();
                 }
@@ -145,7 +145,7 @@ namespace NeoImobSystem_API.Controllers
             return NoContent();
         }
 
-        private bool VerificaCasaExiste(uint id)
+        private bool VerificaCasa(uint id)
         {
             return _context.Casas.Any(e => e.Id == id);
         }

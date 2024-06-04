@@ -51,7 +51,7 @@ namespace NeoImobSystem_API.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Casas");
+                    b.ToTable("Casas", (string)null);
                 });
 
             modelBuilder.Entity("NeoImobSystem_API.Model.CasaProprietario", b =>
@@ -72,7 +72,7 @@ namespace NeoImobSystem_API.Migrations
 
                     b.HasIndex("ProprietarioId");
 
-                    b.ToTable("CasaProprietarios");
+                    b.ToTable("CasaProprietarios", (string)null);
                 });
 
             modelBuilder.Entity("NeoImobSystem_API.Model.Contrato", b =>
@@ -120,7 +120,7 @@ namespace NeoImobSystem_API.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Contratos");
+                    b.ToTable("Contratos", (string)null);
                 });
 
             modelBuilder.Entity("NeoImobSystem_API.Model.ContratoInquilino", b =>
@@ -141,7 +141,7 @@ namespace NeoImobSystem_API.Migrations
 
                     b.HasIndex("InquilinoId");
 
-                    b.ToTable("ContratoInquilinos");
+                    b.ToTable("ContratoInquilinos", (string)null);
                 });
 
             modelBuilder.Entity("NeoImobSystem_API.Model.Inquilino", b =>
@@ -182,7 +182,7 @@ namespace NeoImobSystem_API.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Inquilinos");
+                    b.ToTable("Inquilinos", (string)null);
                 });
 
             modelBuilder.Entity("NeoImobSystem_API.Model.Proprietario", b =>
@@ -223,7 +223,7 @@ namespace NeoImobSystem_API.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Proprietarios");
+                    b.ToTable("Proprietarios", (string)null);
                 });
 
             modelBuilder.Entity("NeoImobSystem_API.Model.Usuario", b =>
@@ -246,7 +246,7 @@ namespace NeoImobSystem_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Usuarios");
+                    b.ToTable("Usuarios", (string)null);
                 });
 
             modelBuilder.Entity("NeoImobSystem_API.Model.Casa", b =>

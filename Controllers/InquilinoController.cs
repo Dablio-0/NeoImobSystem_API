@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NeoImobSystem_API.Data;
+using NeoImobSystem_API.DTO;
 using NeoImobSystem_API.Model;
 
 namespace NeoImobSystem_API.Controllers
@@ -23,14 +24,14 @@ namespace NeoImobSystem_API.Controllers
 
         // GET: api/Inquilino
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Inquilino>>> GetInquilinos()
+        public async Task<ActionResult<IEnumerable<Inquilino>>> ListagemInquilinos()
         {
             return await _context.Inquilinos.ToListAsync();
         }
 
         // GET: api/Inquilino/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Inquilino>> GetInquilino(uint id)
+        public async Task<ActionResult<Inquilino>> ChecarInquilinoPorId(uint id)
         {
             var inquilino = await _context.Inquilinos.FindAsync(id);
 
@@ -45,7 +46,7 @@ namespace NeoImobSystem_API.Controllers
         // PUT: api/Inquilino/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutInquilino(uint id, Inquilino inquilino)
+        public async Task<IActionResult> EditarInquilino(uint id, Inquilino inquilino)
         {
             if (id != inquilino.Id)
             {
@@ -60,7 +61,7 @@ namespace NeoImobSystem_API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!InquilinoExists(id))
+                if (!VerificaInquilino(id))
                 {
                     return NotFound();
                 }
@@ -76,17 +77,39 @@ namespace NeoImobSystem_API.Controllers
         // POST: api/Inquilino
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Inquilino>> PostInquilino(Inquilino inquilino)
+        public async Task<ActionResult<Inquilino>> CriarInquilino(CriarInquilinoDTO request)
         {
-            _context.Inquilinos.Add(inquilino);
+            var usuario = await _context.Usuarios.FindAsync(request.UsuarioId);
+
+            if (usuario == null)
+                return NotFound("Não existe esse usuário.");
+            var inquilino = await _context.Inquilinos.FindAsync(request.CPF);
+
+            if (inquilino != null)
+                return Conflict("Já existe um inquilino com o mesmo CPF.");
+
+
+            var novoInquilino = new Inquilino
+            {
+                Nome = request.Nome,
+                Email = request.Email,
+                Telefone = request.Telefone,
+                CPF = request.CPF,
+                DataNascimento = request.DataNascimento,
+                DataCriacao = DateTime.Now,
+                DataAtualizacao = DateTime.Now,
+                Usuario = usuario
+            };
+
+            _context.Inquilinos.Add(novoInquilino);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetInquilino", new { id = inquilino.Id }, inquilino);
+            return CreatedAtAction("ChecarInquilinoPorId", new { id = novoInquilino.Id }, novoInquilino);
         }
 
         // DELETE: api/Inquilino/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteInquilino(uint id)
+        public async Task<IActionResult> ExcluirInquilino(uint id)
         {
             var inquilino = await _context.Inquilinos.FindAsync(id);
             if (inquilino == null)
@@ -100,7 +123,7 @@ namespace NeoImobSystem_API.Controllers
             return NoContent();
         }
 
-        private bool InquilinoExists(uint id)
+        private bool VerificaInquilino(uint id)
         {
             return _context.Inquilinos.Any(e => e.Id == id);
         }
