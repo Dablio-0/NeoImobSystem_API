@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // GET: api/Contrato
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Contrato>>> GetContratos()
         {
@@ -29,6 +31,7 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // GET: api/Contrato/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<Contrato>> GetContrato(uint id)
         {
@@ -43,7 +46,7 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // PUT: api/Contrato/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutContrato(uint id, Contrato contrato)
         {
@@ -74,7 +77,7 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // POST: api/Contrato
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Contrato>> PostContrato(Contrato contrato)
         {
@@ -85,6 +88,7 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // DELETE: api/Contrato/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteContrato(uint id)
         {

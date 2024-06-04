@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // GET: api/Inquilino
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Inquilino>>> GetInquilinos()
         {
@@ -29,6 +31,7 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // GET: api/Inquilino/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<Inquilino>> GetInquilino(uint id)
         {
@@ -43,7 +46,7 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // PUT: api/Inquilino/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutInquilino(uint id, Inquilino inquilino)
         {
@@ -74,7 +77,11 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // POST: api/Inquilino
+<<<<<<< Updated upstream
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+=======
+        [Authorize]
+>>>>>>> Stashed changes
         [HttpPost]
         public async Task<ActionResult<Inquilino>> PostInquilino(Inquilino inquilino)
         {
@@ -85,6 +92,7 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // DELETE: api/Inquilino/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteInquilino(uint id)
         {

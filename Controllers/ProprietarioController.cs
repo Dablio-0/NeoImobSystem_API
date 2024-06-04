@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,12 +24,18 @@ namespace NeoImobSystem_API.Controllers
 
         // GET: api/Proprietario
         [HttpGet]
+<<<<<<< Updated upstream
         public async Task<ActionResult<IEnumerable<Proprietario>>> GetProprietarios()
+=======
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<Proprietario>>> ListagemProprietarios()
+>>>>>>> Stashed changes
         {
             return await _context.Proprietarios.ToListAsync();
         }
 
         // GET: api/Proprietario/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<Proprietario>> GetProprietario(uint id)
         {
@@ -43,7 +50,7 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // PUT: api/Proprietario/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProprietario(uint id, Proprietario proprietario)
         {
@@ -74,7 +81,11 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // POST: api/Proprietario
+<<<<<<< Updated upstream
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+=======
+        [Authorize]
+>>>>>>> Stashed changes
         [HttpPost]
         public async Task<ActionResult<Proprietario>> PostProprietario(Proprietario proprietario)
         {
@@ -85,6 +96,7 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // DELETE: api/Proprietario/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProprietario(uint id)
         {
