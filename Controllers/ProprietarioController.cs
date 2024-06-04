@@ -75,19 +75,19 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // POST: api/Proprietario
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Inquilino>> CriarProprietario(CriarProprietarioDTO request)
+        public async Task<ActionResult<Proprietario>> CriarProprietario(CriarProprietarioDTO request)
         {
+
             var usuario = await _context.Usuarios.FindAsync(request.UsuarioId);
 
             if (usuario == null)
                 return NotFound("Não existe esse usuário.");
 
-            var proprietario = await _context.Proprietarios.FindAsync(request.CPF);
+            var proprietario = await _context.Proprietarios.Where(i => i.CPF.Equals(request.CPF)).FirstOrDefaultAsync();
 
             if (proprietario != null)
-                return Conflict("Já existe um inquilino com o mesmo CPF.");
+                return Conflict("Já existe um proprietario com o mesmo CPF.");
 
 
             var novoProprietario = new Proprietario
@@ -99,7 +99,7 @@ namespace NeoImobSystem_API.Controllers
                 DataNascimento = request.DataNascimento,
                 DataCriacao = DateTime.Now,
                 DataAtualizacao = DateTime.Now,
-                Usuario = usuario
+                UsuarioId = request.UsuarioId
             };
 
             _context.Proprietarios.Add(novoProprietario);

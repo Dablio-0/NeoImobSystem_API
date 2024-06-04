@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using NeoImobSystem_API.Data;
 using NeoImobSystem_API.DTO;
 using NeoImobSystem_API.Model;
+using Serilog;
 
 namespace NeoImobSystem_API.Controllers
 {
@@ -26,7 +27,9 @@ namespace NeoImobSystem_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Inquilino>>> ListagemInquilinos()
         {
-            return await _context.Inquilinos.ToListAsync();
+            return await _context.Inquilinos
+                .Include(i => i.Usuario)
+                .ToListAsync();
         }
 
         // GET: api/Inquilino/5
@@ -75,15 +78,16 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // POST: api/Inquilino
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Inquilino>> CriarInquilino(CriarInquilinoDTO request)
         {
+
             var usuario = await _context.Usuarios.FindAsync(request.UsuarioId);
 
             if (usuario == null)
                 return NotFound("Não existe esse usuário.");
-            var inquilino = await _context.Inquilinos.FindAsync(request.CPF);
+
+            var inquilino = await _context.Inquilinos.Where(i => i.CPF.Equals(request.CPF)).FirstOrDefaultAsync();
 
             if (inquilino != null)
                 return Conflict("Já existe um inquilino com o mesmo CPF.");
@@ -98,7 +102,7 @@ namespace NeoImobSystem_API.Controllers
                 DataNascimento = request.DataNascimento,
                 DataCriacao = DateTime.Now,
                 DataAtualizacao = DateTime.Now,
-                Usuario = usuario
+                UsuarioId = request.UsuarioId
             };
 
             _context.Inquilinos.Add(novoInquilino);
