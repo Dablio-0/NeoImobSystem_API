@@ -1,4 +1,6 @@
-﻿namespace NeoImobSystem_API.Model
+﻿using System.Text.Json.Serialization;
+
+namespace NeoImobSystem_API.Model
 {
     public class Usuario
     {
@@ -9,10 +11,14 @@
         public string Senha { get; set; } = string.Empty;
 
         //Relacionamentos (Listagem de Informações)
-        public ICollection<Casa> Casas { get; set; }
-        public ICollection<Contrato> Contratos { get; set; }
-        public ICollection<Inquilino> Inquilinos { get; set; }
-        public ICollection<Proprietario> Proprietarios { get; set; }
+        [JsonIgnore]
+        public List<Casa> Casas { get; set; } = new List<Casa>();
+        [JsonIgnore]
+        public List<Contrato> Contratos { get; set; } = new List<Contrato>();
+        [JsonIgnore]
+        public List<Inquilino> Inquilinos { get; set; } = new List<Inquilino>();
+        [JsonIgnore]
+        public List<Proprietario> Proprietarios { get; set; } = new List<Proprietario>();
         #endregion 
     }
 }

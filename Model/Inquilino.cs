@@ -1,4 +1,6 @@
-﻿namespace NeoImobSystem_API.Model
+﻿using System.Text.Json.Serialization;
+
+namespace NeoImobSystem_API.Model
 {
     public class Inquilino
     {
@@ -13,6 +15,9 @@
         public DateTime DataAtualizacao { get; set; }
 
         // Relacionamentos
+        [JsonIgnore]
+        public List<ContratoInquilino?> ContratoInquilinos { get; set; } = new List<ContratoInquilino?>();
+
         public Usuario Usuario { get; set; }
         public uint UsuarioId { get; set; }
         #endregion

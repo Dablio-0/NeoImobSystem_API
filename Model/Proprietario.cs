@@ -1,4 +1,6 @@
-﻿namespace NeoImobSystem_API.Model
+﻿using System.Text.Json.Serialization;
+
+namespace NeoImobSystem_API.Model
 {
     public class Proprietario
     {
@@ -13,6 +15,9 @@
         public DateTime DataAtualizacao { get; set; }
 
         // Relacionamentos
+        [JsonIgnore]
+        public List<CasaProprietario?> CasaProprietarios { get; set; } = new List<CasaProprietario?>();
+
         public Usuario Usuario { get; set; }
         public uint UsuarioId { get; set; }
         #endregion

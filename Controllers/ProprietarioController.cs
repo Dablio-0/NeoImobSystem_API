@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NeoImobSystem_API.Data;
+using NeoImobSystem_API.DTO;
 using NeoImobSystem_API.Model;
 
 namespace NeoImobSystem_API.Controllers
@@ -24,12 +25,8 @@ namespace NeoImobSystem_API.Controllers
 
         // GET: api/Proprietario
         [HttpGet]
-<<<<<<< Updated upstream
-        public async Task<ActionResult<IEnumerable<Proprietario>>> GetProprietarios()
-=======
         [Authorize]
         public async Task<ActionResult<IEnumerable<Proprietario>>> ListagemProprietarios()
->>>>>>> Stashed changes
         {
             return await _context.Proprietarios.ToListAsync();
         }
@@ -37,7 +34,7 @@ namespace NeoImobSystem_API.Controllers
         // GET: api/Proprietario/5
         [Authorize]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Proprietario>> GetProprietario(uint id)
+        public async Task<ActionResult<Proprietario>> ChecarProprietarioPorId(uint id)
         {
             var proprietario = await _context.Proprietarios.FindAsync(id);
 
@@ -52,7 +49,7 @@ namespace NeoImobSystem_API.Controllers
         // PUT: api/Proprietario/5
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProprietario(uint id, Proprietario proprietario)
+        public async Task<IActionResult> EditarProprietario(uint id, Proprietario proprietario)
         {
             if (id != proprietario.Id)
             {
@@ -67,7 +64,7 @@ namespace NeoImobSystem_API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProprietarioExists(id))
+                if (!VerificaProprietario(id))
                 {
                     return NotFound();
                 }
@@ -81,24 +78,44 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // POST: api/Proprietario
-<<<<<<< Updated upstream
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-=======
         [Authorize]
->>>>>>> Stashed changes
         [HttpPost]
-        public async Task<ActionResult<Proprietario>> PostProprietario(Proprietario proprietario)
+        public async Task<ActionResult<Proprietario>> CriarProprietario(CriarProprietarioDTO request)
         {
-            _context.Proprietarios.Add(proprietario);
+
+            var usuario = await _context.Usuarios.FindAsync(request.UsuarioId);
+
+            if (usuario == null)
+                return NotFound("Não existe esse usuário.");
+
+            var proprietario = await _context.Proprietarios.Where(i => i.CPF.Equals(request.CPF)).FirstOrDefaultAsync();
+
+            if (proprietario != null)
+                return Conflict("Já existe um proprietario com o mesmo CPF.");
+
+
+            var novoProprietario = new Proprietario
+            {
+                Nome = request.Nome,
+                Email = request.Email,
+                Telefone = request.Telefone,
+                CPF = request.CPF,
+                DataNascimento = request.DataNascimento,
+                DataCriacao = DateTime.Now,
+                DataAtualizacao = DateTime.Now,
+                UsuarioId = request.UsuarioId
+            };
+
+            _context.Proprietarios.Add(novoProprietario);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProprietario", new { id = proprietario.Id }, proprietario);
+            return CreatedAtAction("ChecarProprietarioPorId", new { id = novoProprietario.Id }, novoProprietario);
         }
 
         // DELETE: api/Proprietario/5
         [Authorize]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProprietario(uint id)
+        public async Task<IActionResult> ExcluirProprietario(uint id)
         {
             var proprietario = await _context.Proprietarios.FindAsync(id);
             if (proprietario == null)
@@ -112,7 +129,7 @@ namespace NeoImobSystem_API.Controllers
             return NoContent();
         }
 
-        private bool ProprietarioExists(uint id)
+        private bool VerificaProprietario(uint id)
         {
             return _context.Proprietarios.Any(e => e.Id == id);
         }

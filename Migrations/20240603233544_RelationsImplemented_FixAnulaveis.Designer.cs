@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NeoImobSystem_API.Data;
 
@@ -10,9 +11,11 @@ using NeoImobSystem_API.Data;
 namespace NeoImobSystem_API.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240603233544_RelationsImplemented_FixAnulaveis")]
+    partial class RelationsImplemented_FixAnulaveis
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
@@ -51,7 +54,7 @@ namespace NeoImobSystem_API.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Casas", (string)null);
+                    b.ToTable("Casas");
                 });
 
             modelBuilder.Entity("NeoImobSystem_API.Model.CasaProprietario", b =>
@@ -60,10 +63,10 @@ namespace NeoImobSystem_API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<uint?>("CasaId")
+                    b.Property<uint>("CasaId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<uint?>("ProprietarioId")
+                    b.Property<uint>("ProprietarioId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -72,13 +75,16 @@ namespace NeoImobSystem_API.Migrations
 
                     b.HasIndex("ProprietarioId");
 
-                    b.ToTable("CasaProprietarios", (string)null);
+                    b.ToTable("CasaProprietarios");
                 });
 
             modelBuilder.Entity("NeoImobSystem_API.Model.Contrato", b =>
                 {
                     b.Property<uint>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint?>("CasaId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("DataAtualizacao")
@@ -95,10 +101,6 @@ namespace NeoImobSystem_API.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Inicio")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("InquilinosId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<uint>("Parcelas")
@@ -120,7 +122,7 @@ namespace NeoImobSystem_API.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Contratos", (string)null);
+                    b.ToTable("Contratos");
                 });
 
             modelBuilder.Entity("NeoImobSystem_API.Model.ContratoInquilino", b =>
@@ -129,10 +131,10 @@ namespace NeoImobSystem_API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<uint?>("ContratoId")
+                    b.Property<uint>("ContratoId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<uint?>("InquilinoId")
+                    b.Property<uint>("InquilinoId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -141,7 +143,7 @@ namespace NeoImobSystem_API.Migrations
 
                     b.HasIndex("InquilinoId");
 
-                    b.ToTable("ContratoInquilinos", (string)null);
+                    b.ToTable("ContratoInquilino");
                 });
 
             modelBuilder.Entity("NeoImobSystem_API.Model.Inquilino", b =>
@@ -182,7 +184,7 @@ namespace NeoImobSystem_API.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Inquilinos", (string)null);
+                    b.ToTable("Inquilinos");
                 });
 
             modelBuilder.Entity("NeoImobSystem_API.Model.Proprietario", b =>
@@ -223,7 +225,7 @@ namespace NeoImobSystem_API.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Proprietarios", (string)null);
+                    b.ToTable("Proprietarios");
                 });
 
             modelBuilder.Entity("NeoImobSystem_API.Model.Usuario", b =>
@@ -246,7 +248,7 @@ namespace NeoImobSystem_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Usuarios", (string)null);
+                    b.ToTable("Usuarios");
                 });
 
             modelBuilder.Entity("NeoImobSystem_API.Model.Casa", b =>
@@ -270,11 +272,15 @@ namespace NeoImobSystem_API.Migrations
                 {
                     b.HasOne("NeoImobSystem_API.Model.Casa", "Casa")
                         .WithMany("CasaProprietarios")
-                        .HasForeignKey("CasaId");
+                        .HasForeignKey("CasaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("NeoImobSystem_API.Model.Proprietario", "Proprietario")
                         .WithMany("CasaProprietarios")
-                        .HasForeignKey("ProprietarioId");
+                        .HasForeignKey("ProprietarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Casa");
 
@@ -296,11 +302,15 @@ namespace NeoImobSystem_API.Migrations
                 {
                     b.HasOne("NeoImobSystem_API.Model.Contrato", "Contrato")
                         .WithMany("ContratoInquilinos")
-                        .HasForeignKey("ContratoId");
+                        .HasForeignKey("ContratoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("NeoImobSystem_API.Model.Inquilino", "Inquilino")
                         .WithMany("ContratoInquilinos")
-                        .HasForeignKey("InquilinoId");
+                        .HasForeignKey("InquilinoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Contrato");
 

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NeoImobSystem_API.Data;
 
@@ -10,9 +11,11 @@ using NeoImobSystem_API.Data;
 namespace NeoImobSystem_API.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240604014203_Correcao_FKCasaContrato")]
+    partial class Correcao_FKCasaContrato
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
@@ -51,7 +54,7 @@ namespace NeoImobSystem_API.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Casas", (string)null);
+                    b.ToTable("Casas");
                 });
 
             modelBuilder.Entity("NeoImobSystem_API.Model.CasaProprietario", b =>
@@ -72,13 +75,16 @@ namespace NeoImobSystem_API.Migrations
 
                     b.HasIndex("ProprietarioId");
 
-                    b.ToTable("CasaProprietarios", (string)null);
+                    b.ToTable("CasaProprietarios");
                 });
 
             modelBuilder.Entity("NeoImobSystem_API.Model.Contrato", b =>
                 {
                     b.Property<uint>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint?>("CasaId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("DataAtualizacao")
@@ -120,7 +126,7 @@ namespace NeoImobSystem_API.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Contratos", (string)null);
+                    b.ToTable("Contratos");
                 });
 
             modelBuilder.Entity("NeoImobSystem_API.Model.ContratoInquilino", b =>
@@ -141,7 +147,7 @@ namespace NeoImobSystem_API.Migrations
 
                     b.HasIndex("InquilinoId");
 
-                    b.ToTable("ContratoInquilinos", (string)null);
+                    b.ToTable("ContratoInquilinos");
                 });
 
             modelBuilder.Entity("NeoImobSystem_API.Model.Inquilino", b =>
@@ -182,7 +188,7 @@ namespace NeoImobSystem_API.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Inquilinos", (string)null);
+                    b.ToTable("Inquilinos");
                 });
 
             modelBuilder.Entity("NeoImobSystem_API.Model.Proprietario", b =>
@@ -223,7 +229,7 @@ namespace NeoImobSystem_API.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Proprietarios", (string)null);
+                    b.ToTable("Proprietarios");
                 });
 
             modelBuilder.Entity("NeoImobSystem_API.Model.Usuario", b =>
@@ -246,7 +252,7 @@ namespace NeoImobSystem_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Usuarios", (string)null);
+                    b.ToTable("Usuarios");
                 });
 
             modelBuilder.Entity("NeoImobSystem_API.Model.Casa", b =>
