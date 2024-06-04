@@ -13,7 +13,7 @@ namespace NeoImobSystem_API.Model
 
         [JsonIgnore]
         public Proprietario Proprietario { get; set; }
-        [ForeignKey(""))]
+        [ForeignKey("ProprietarioId")]
         public uint? ProprietarioId { get; set; }
     }
 }

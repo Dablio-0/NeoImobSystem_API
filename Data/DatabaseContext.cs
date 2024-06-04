@@ -19,6 +19,7 @@ namespace NeoImobSystem_API.Data
         public DbSet<Usuario> Usuarios { get; set; }
 
         public DbSet<CasaProprietario> CasaProprietarios { get; set; }
+        public DbSet<ContratoInquilino> ContratoInquilinos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,11 +29,6 @@ namespace NeoImobSystem_API.Data
             modelBuilder.Entity<Casa>()
                 .HasOne(c => c.Contrato)
                 .WithOne(c => c.Casa)
-                .HasForeignKey<Contrato>(c => c.CasaId);
-
-            modelBuilder.Entity<Contrato>()
-                .HasOne(c => c.Casa)
-                .WithOne(c => c.Contrato)
                 .HasForeignKey<Casa>(c => c.ContratoId);
             #endregion
 

@@ -27,7 +27,6 @@ namespace NeoImobSystem_API.Controllers
         public async Task<ActionResult<IEnumerable<Contrato>>> GetContratos()
         {
             return await _context.Contratos
-                .Include(c => c.Casa)
                 .Include(c => c.ContratoInquilinos)
                 .Include(c => c.Usuario)
                 .ToListAsync();
@@ -136,7 +135,6 @@ namespace NeoImobSystem_API.Controllers
                 Inicio = request.Inicio,
                 Fim = request.Fim,
                 Periodo = periodoData,
-                Casa = casa,
                 InquilinosId = request.InquilinosId,
                 Usuario = usuario,
             };

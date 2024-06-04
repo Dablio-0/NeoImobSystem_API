@@ -17,12 +17,9 @@ namespace NeoImobSystem_API.Model
         public DateTime DataCriacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
 
-
         // Relacionamentos
         [JsonIgnore]
         public Casa Casa { get; set; }
-        [ForeignKey("CasaId")]
-        public uint? CasaId { get; set; }
 
         [JsonIgnore]
         public List<ContratoInquilino?> ContratoInquilinos { get; set; } = new List<ContratoInquilino?>();
