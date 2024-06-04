@@ -19,6 +19,9 @@ namespace NeoImobSystem_API.Model
         public uint? ContratoId { get; set; }
 
         [JsonIgnore]
+        public List<CasaProprietario?> CasaProprietarios { get; set; } = new List<CasaProprietario?>();
+
+        [JsonIgnore]
         public Usuario Usuario { get; set; }
         [ForeignKey("Usuarioid")]
         public uint UsuarioId { get; set; }

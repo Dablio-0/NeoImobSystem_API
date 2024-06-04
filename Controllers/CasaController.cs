@@ -23,7 +23,10 @@ namespace NeoImobSystem_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Casa>>> PegarTodasCasas()
         {
-            return await _context.Casas.ToListAsync();
+            return await _context.Casas
+                .Include(c => c.CasaProprietarios)
+                .Include(c => c.Usuario)
+                .ToListAsync();
         }
 
         // GET: api/Casa/5
@@ -78,14 +81,14 @@ namespace NeoImobSystem_API.Controllers
         [HttpPost]
         public async Task<ActionResult<Casa>> CriarCasa(CriarCasaDTO request)
         {
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == request.UsuarioId);
+            var usuario = await _context.Usuarios.FindAsync(request.UsuarioId);
             if (usuario == null)
                 return NotFound("Não existe esse usuário");
 
 
-            if (request.ContratoId != null)
+            if (request.ContratoId != 0)
             {
-                var contrato = await _context.Contratos.FirstOrDefaultAsync(u => u.Id == request.ContratoId);
+                var contrato = await _context.Contratos.FindAsync(request.ContratoId);
                 if (contrato == null)
                     return BadRequest("Contrato não encontrado.");
 

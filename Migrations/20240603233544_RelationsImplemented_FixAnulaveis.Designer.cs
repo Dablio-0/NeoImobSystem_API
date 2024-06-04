@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NeoImobSystem_API.Data;
 
@@ -10,9 +11,11 @@ using NeoImobSystem_API.Data;
 namespace NeoImobSystem_API.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240603233544_RelationsImplemented_FixAnulaveis")]
+    partial class RelationsImplemented_FixAnulaveis
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
@@ -60,10 +63,10 @@ namespace NeoImobSystem_API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<uint?>("CasaId")
+                    b.Property<uint>("CasaId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<uint?>("ProprietarioId")
+                    b.Property<uint>("ProprietarioId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -100,10 +103,6 @@ namespace NeoImobSystem_API.Migrations
                     b.Property<DateTime>("Inicio")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("InquilinosId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<uint>("Parcelas")
                         .HasColumnType("INTEGER");
 
@@ -132,10 +131,10 @@ namespace NeoImobSystem_API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<uint?>("ContratoId")
+                    b.Property<uint>("ContratoId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<uint?>("InquilinoId")
+                    b.Property<uint>("InquilinoId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -273,11 +272,15 @@ namespace NeoImobSystem_API.Migrations
                 {
                     b.HasOne("NeoImobSystem_API.Model.Casa", "Casa")
                         .WithMany("CasaProprietarios")
-                        .HasForeignKey("CasaId");
+                        .HasForeignKey("CasaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("NeoImobSystem_API.Model.Proprietario", "Proprietario")
                         .WithMany("CasaProprietarios")
-                        .HasForeignKey("ProprietarioId");
+                        .HasForeignKey("ProprietarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Casa");
 
@@ -299,11 +302,15 @@ namespace NeoImobSystem_API.Migrations
                 {
                     b.HasOne("NeoImobSystem_API.Model.Contrato", "Contrato")
                         .WithMany("ContratoInquilinos")
-                        .HasForeignKey("ContratoId");
+                        .HasForeignKey("ContratoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("NeoImobSystem_API.Model.Inquilino", "Inquilino")
                         .WithMany("ContratoInquilinos")
-                        .HasForeignKey("InquilinoId");
+                        .HasForeignKey("InquilinoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Contrato");
 

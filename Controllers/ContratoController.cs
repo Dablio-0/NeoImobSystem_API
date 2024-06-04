@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NeoImobSystem_API.Data;
+using NeoImobSystem_API.DTO;
 using NeoImobSystem_API.Model;
 
 namespace NeoImobSystem_API.Controllers
@@ -25,7 +26,11 @@ namespace NeoImobSystem_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Contrato>>> GetContratos()
         {
-            return await _context.Contratos.ToListAsync();
+            return await _context.Contratos
+                .Include(c => c.Casa)
+                .Include(c => c.ContratoInquilinos)
+                .Include(c => c.Usuario)
+                .ToListAsync();
         }
 
         // GET: api/Contrato/5
@@ -76,13 +81,81 @@ namespace NeoImobSystem_API.Controllers
         // POST: api/Contrato
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Contrato>> PostContrato(Contrato contrato)
+        public async Task<ActionResult<Contrato>> PostContrato(CriarContratoDTO request)
         {
+            if (request == null)
+            {
+                return BadRequest("O corpo da requisição não pode ser nulo");
+            }
+
+            // Verificar se o usuário existe
+            var usuario = await _context.Usuarios.FindAsync(request.UsuarioId);
+            if (usuario == null)
+                return NotFound("Não existe esse usuário");
+
+            // Verificar se a casa existe
+            var casa = await _context.Casas.FindAsync(request.CasaId);
+            if (casa == null)
+                return NotFound("Não existe essa casa");
+
+            // Verificar se a lista de inquilinos foi fornecida e não está vazia
+            if (request.InquilinosId == null || !request.InquilinosId.Any())
+            {
+                return BadRequest("É necessário fornecer pelo menos um inquilino para criar um contrato");
+            }
+
+            // Verificar se todos os inquilinos existem
+            foreach (var inquilinoId in request.InquilinosId)
+            {
+                var inquilinoExists = await _context.Inquilinos.FindAsync(inquilinoId);
+                if (inquilinoExists == null)
+                {
+                    return BadRequest("Um ou mais inquilinos não existem");
+                }
+            }
+
+            // Calcular o período em dias, horas, e minutos entre Inicio e Fim
+            DateTime inicio = request.Inicio;
+            DateTime fim = request.Fim;
+            if (fim < inicio)
+            {
+                return BadRequest("A data de término deve ser posterior à data de início");
+            }
+
+            TimeSpan periodoTotal = fim - inicio;
+
+            // Criar um DateTime que representa o período a partir de uma data de referência
+            DateTime periodoData = new DateTime(1, 1, 1).Add(periodoTotal);
+
+            var contrato = new Contrato
+            {
+                Descricao = request.Descricao,
+                Status = request.Status,
+                Valor = request.Valor,
+                Parcelas = request.Parcelas,
+                Inicio = request.Inicio,
+                Fim = request.Fim,
+                Periodo = periodoData,
+                Casa = casa,
+                InquilinosId = request.InquilinosId,
+                Usuario = usuario,
+            };
+
+            foreach (var inquilinoId in request.InquilinosId)
+            {
+                contrato.ContratoInquilinos.Add(new ContratoInquilino
+                {
+                    InquilinoId = inquilinoId
+                });
+            }
+
             _context.Contratos.Add(contrato);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetContrato", new { id = contrato.Id }, contrato);
         }
+
+
 
         // DELETE: api/Contrato/5
         [HttpDelete("{id}")]

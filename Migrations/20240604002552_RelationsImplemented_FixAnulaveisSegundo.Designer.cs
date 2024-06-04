@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NeoImobSystem_API.Data;
 
@@ -10,9 +11,11 @@ using NeoImobSystem_API.Data;
 namespace NeoImobSystem_API.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240604002552_RelationsImplemented_FixAnulaveisSegundo")]
+    partial class RelationsImplemented_FixAnulaveisSegundo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
@@ -98,10 +101,6 @@ namespace NeoImobSystem_API.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Inicio")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("InquilinosId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<uint>("Parcelas")

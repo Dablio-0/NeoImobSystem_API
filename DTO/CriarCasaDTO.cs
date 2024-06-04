@@ -8,7 +8,7 @@ namespace NeoImobSystem_API.DTO
         public uint NumeroSalas { get; set; }
         public string Tipo { get; set; }
         [Required] public string CEP { get; set; }
-        public uint ContratoId { get; set; }
+        public uint ContratoId { get; set; } = 0;
         [Required] public uint UsuarioId { get; set; }
     }
 }

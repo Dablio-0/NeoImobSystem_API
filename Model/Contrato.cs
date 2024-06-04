@@ -1,4 +1,7 @@
-﻿namespace NeoImobSystem_API.Model
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+
+namespace NeoImobSystem_API.Model
 {
     public class Contrato
     {
@@ -16,8 +19,22 @@
 
 
         // Relacionamentos
+        [JsonIgnore]
+        public Casa Casa { get; set; }
+        [ForeignKey("CasaId")]
+        public uint? CasaId { get; set; }
+
+        [JsonIgnore]
+        public List<ContratoInquilino?> ContratoInquilinos { get; set; } = new List<ContratoInquilino?>();
+
+        [JsonIgnore]
+        public List<uint> InquilinosId { get; set; }
+
+        [JsonIgnore]
         public Usuario Usuario { get; set; }
+        [ForeignKey("UsuarioId")]
         public uint UsuarioId { get; set; }
+
         #endregion
 
 
