@@ -7,11 +7,10 @@ namespace NeoImobSystem_API.Model
     {
         public uint Id { get; set; }
 
-        [JsonIgnore]
         public Casa Casa { get; set; }
+        [ForeignKey("CasaId")]
         public uint? CasaId { get; set; }
 
-        [JsonIgnore]
         public Proprietario Proprietario { get; set; }
         [ForeignKey("ProprietarioId")]
         public uint? ProprietarioId { get; set; }

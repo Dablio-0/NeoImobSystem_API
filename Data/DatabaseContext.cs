@@ -83,7 +83,6 @@ namespace NeoImobSystem_API.Data
                 .WithMany(c => c.ContratoInquilinos)
                 .HasForeignKey(cp => cp.InquilinoId);
             #endregion
-
         }
     }
 }

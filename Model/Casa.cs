@@ -13,7 +13,8 @@ namespace NeoImobSystem_API.Model
         public string CEP { get; set; }
 
         // Relacionamentos
-        [JsonIgnore]
+        public List<uint?> ProprietariosId { get; set; } = new List<uint?>();
+
         public Contrato Contrato { get; set; }
         [ForeignKey("ContratoId")]
         public uint? ContratoId { get; set; }
@@ -21,9 +22,8 @@ namespace NeoImobSystem_API.Model
         [JsonIgnore]
         public List<CasaProprietario?> CasaProprietarios { get; set; } = new List<CasaProprietario?>();
 
-        [JsonIgnore]
         public Usuario Usuario { get; set; }
-        [ForeignKey("Usuarioid")]
+        [ForeignKey("UsuarioId")]
         public uint UsuarioId { get; set; }
         #endregion
     }

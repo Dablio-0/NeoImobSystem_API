@@ -2,7 +2,7 @@
 
 namespace NeoImobSystem_API.DTO
 {
-    public class CriarContratoDTO
+    public class EditarContratoDTO
     {
         [Required] public string Descricao { get; set; }
         [Required] public bool Status { get; set; } = false;

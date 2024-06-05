@@ -28,7 +28,9 @@ namespace NeoImobSystem_API.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<Proprietario>>> ListagemProprietarios()
         {
-            return await _context.Proprietarios.ToListAsync();
+            return await _context.Proprietarios
+                .Include(p => p.Usuario)
+                .ToListAsync();
         }
 
         // GET: api/Proprietario/5
@@ -82,7 +84,6 @@ namespace NeoImobSystem_API.Controllers
         [HttpPost]
         public async Task<ActionResult<Proprietario>> CriarProprietario(CriarProprietarioDTO request)
         {
-
             var usuario = await _context.Usuarios.FindAsync(request.UsuarioId);
 
             if (usuario == null)
@@ -92,7 +93,6 @@ namespace NeoImobSystem_API.Controllers
 
             if (proprietario != null)
                 return Conflict("Já existe um proprietario com o mesmo CPF.");
-
 
             var novoProprietario = new Proprietario
             {

@@ -62,7 +62,7 @@ namespace NeoImobSystem_API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditarUsuario(uint id, Inquilino usuario)
+        public async Task<IActionResult> EditarUsuario(uint id, Usuario usuario)
         {
             if (id != usuario.Id)
             {

@@ -2,7 +2,7 @@
 
 namespace NeoImobSystem_API.DTO
 {
-    public class CriarCasaDTO
+    public class EditarCasaDTO
     {
         [Required] public string Endereco { get; set; }
         public uint NumeroSalas { get; set; }

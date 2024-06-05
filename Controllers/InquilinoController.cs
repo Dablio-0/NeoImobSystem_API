@@ -81,12 +81,10 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // POST: api/Inquilino
-
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<Inquilino>> CriarInquilino(CriarInquilinoDTO request)
         {
-
             var usuario = await _context.Usuarios.FindAsync(request.UsuarioId);
 
             if (usuario == null)
@@ -96,7 +94,6 @@ namespace NeoImobSystem_API.Controllers
 
             if (inquilino != null)
                 return Conflict("Já existe um inquilino com o mesmo CPF.");
-
 
             var novoInquilino = new Inquilino
             {
