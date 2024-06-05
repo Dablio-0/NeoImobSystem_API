@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace NeoImobSystem_API.Model
 {
@@ -19,6 +20,7 @@ namespace NeoImobSystem_API.Model
         public List<CasaProprietario?> CasaProprietarios { get; set; } = new List<CasaProprietario?>();
 
         public Usuario Usuario { get; set; }
+        [ForeignKey("Usuarioid")]
         public uint UsuarioId { get; set; }
         #endregion
     }

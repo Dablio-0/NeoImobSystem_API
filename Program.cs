@@ -4,10 +4,12 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NeoImobSystem_API.Data;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization; // Adicione esta linha
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Adicione o serviço de autenticação JWT
+// Configurações de JWT
 var key = Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("JwtSecret"));
 
 builder.Services.AddAuthentication(options =>
@@ -34,7 +36,14 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddControllers();
+// Adicione a configuração do JSON aqui
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull; // Ignorar propriedades nulas
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase; // Usar camelCase
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; // Ignorar referências cíclicas
+    });
 
 // Configuração do Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
@@ -65,13 +74,11 @@ builder.Services.AddSwaggerGen(c =>
                 Scheme = "oauth2",
                 Name = "Bearer",
                 In = ParameterLocation.Header,
-
             },
             new List<string>()
         }
     });
 });
-
 
 var app = builder.Build();
 
@@ -82,7 +89,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseAuthentication(); // Adicione esta linha para usar autenticação
+app.UseHttpsRedirection();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

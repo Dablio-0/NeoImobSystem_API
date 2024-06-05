@@ -29,6 +29,7 @@ namespace NeoImobSystem_API.Controllers
         public async Task<ActionResult<IEnumerable<Contrato>>> ListagemContratos()
         {
             return await _context.Contratos
+                .Include(c => c.Casa)
                 .Include(c => c.ContratoInquilinos)
                 .Include(c => c.Usuario)
                 .ToListAsync();
@@ -93,12 +94,22 @@ namespace NeoImobSystem_API.Controllers
             // Verificar se o usuário existe
             var usuario = await _context.Usuarios.FindAsync(request.UsuarioId);
             if (usuario == null)
+            {
                 return NotFound("Não existe esse usuário");
+            }
 
             // Verificar se a casa existe
             var casa = await _context.Casas.FindAsync(request.CasaId);
             if (casa == null)
+            {
                 return NotFound("Não existe essa casa");
+            }
+
+            // Verificar se a casa já está associada a um contrato
+            if (casa.ContratoId.HasValue)
+            {
+                return Conflict("Esta casa já pertence a outro contrato");
+            }
 
             // Verificar se a lista de inquilinos foi fornecida e não está vazia
             if (request.InquilinosId == null || !request.InquilinosId.Any())
@@ -129,7 +140,7 @@ namespace NeoImobSystem_API.Controllers
             // Criar um DateTime que representa o período a partir de uma data de referência
             DateTime periodoData = new DateTime(1, 1, 1).Add(periodoTotal);
 
-            var contrato = new Contrato
+            var novoContrato = new Contrato
             {
                 Descricao = request.Descricao,
                 Status = request.Status,
@@ -138,25 +149,24 @@ namespace NeoImobSystem_API.Controllers
                 Inicio = request.Inicio,
                 Fim = request.Fim,
                 Periodo = periodoData,
+                Casa = casa,
                 InquilinosId = request.InquilinosId,
                 Usuario = usuario,
             };
 
             foreach (var inquilinoId in request.InquilinosId)
             {
-                contrato.ContratoInquilinos.Add(new ContratoInquilino
+                novoContrato.ContratoInquilinos.Add(new ContratoInquilino
                 {
                     InquilinoId = inquilinoId
                 });
             }
 
-            _context.Contratos.Add(contrato);
+            _context.Contratos.Add(novoContrato);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("ChecarContratoPorId", new { id = contrato.Id }, contrato);
+            return CreatedAtAction("ChecarContratoPorId", new { id = novoContrato.Id }, novoContrato);
         }
-
-
 
         // DELETE: api/Contrato/5
         [Authorize]

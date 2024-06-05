@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace NeoImobSystem_API.Model
 {
@@ -6,12 +7,12 @@ namespace NeoImobSystem_API.Model
     {
         public uint Id { get; set; }
 
-        [JsonIgnore]
         public Contrato Contrato { get; set; }
+        [ForeignKey("ContratoId")]
         public uint? ContratoId { get; set; }
 
-        [JsonIgnore]
         public Inquilino Inquilino { get; set; }
+        [ForeignKey("InquilinoId")]
         public uint? InquilinoId { get; set; }
     }
 }

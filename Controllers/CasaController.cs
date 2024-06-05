@@ -21,9 +21,10 @@ namespace NeoImobSystem_API.Controllers
         // GET: api/Casa
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Casa>>> ListagemCasas()
+        public async Task<ActionResult<List<Casa>>> ListagemCasas()
         {
             return await _context.Casas
+                .Include(c => c.Contrato)
                 .Include(c => c.CasaProprietarios)
                 .Include(c => c.Usuario)
                 .ToListAsync();
@@ -34,7 +35,12 @@ namespace NeoImobSystem_API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Casa>> ChecarCasaPorId(uint id)
         {
-            var casa = await _context.Casas.FindAsync(id);
+            var casa = await _context.Casas
+                .Include(c => c.Contrato)
+                .Include(c => c.CasaProprietarios)
+                .ThenInclude(cp => cp.Proprietario)
+                .Include(c => c.Usuario)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (casa == null)
             {
@@ -62,7 +68,7 @@ namespace NeoImobSystem_API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!VerificaCasa(id))
+                if (!await VerificaCasa(id))
                 {
                     return NotFound();
                 }
@@ -76,15 +82,15 @@ namespace NeoImobSystem_API.Controllers
         }
 
         // POST: api/Casa
-        //teste de comentário
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<Casa>> CriarCasa(CriarCasaDTO request)
         {
             var usuario = await _context.Usuarios.FindAsync(request.UsuarioId);
             if (usuario == null)
-                return NotFound("Não existe esse usuário");
+                return NotFound("Usuário não encontrado.");
 
+            Casa novaCasa;
 
             if (request.ContratoId != 0)
             {
@@ -92,26 +98,20 @@ namespace NeoImobSystem_API.Controllers
                 if (contrato == null)
                     return BadRequest("Contrato não encontrado.");
 
-                var novaCasa = new Casa
+                novaCasa = new Casa
                 {
                     Endereco = request.Endereco,
                     NumeroSalas = request.NumeroSalas,
                     Tipo = request.Tipo,
                     CEP = request.CEP,
+                    ProprietariosId = request.ProprietariosId,
                     Contrato = contrato,
                     Usuario = usuario,
                 };
-
-                _context.Casas.Add(novaCasa);
-
-                await _context.SaveChangesAsync();
-
-                return CreatedAtAction("ChecarCasaPorId", new { id = novaCasa.Id }, novaCasa);
             }
             else
             {
-
-                var novaCasa = new Casa
+                novaCasa = new Casa
                 {
                     Endereco = request.Endereco,
                     NumeroSalas = request.NumeroSalas,
@@ -119,13 +119,20 @@ namespace NeoImobSystem_API.Controllers
                     CEP = request.CEP,
                     Usuario = usuario,
                 };
-
-                _context.Casas.Add(novaCasa);
-
-                await _context.SaveChangesAsync();
-
-                return CreatedAtAction("ChecarCasaPorId", new { id = novaCasa.Id }, novaCasa);
             }
+
+            foreach (var proprietarioId in request.ProprietariosId)
+            {
+                novaCasa.CasaProprietarios.Add(new CasaProprietario
+                {
+                    ProprietarioId = proprietarioId
+                });
+            }
+
+            _context.Casas.Add(novaCasa);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("ChecarCasaPorId", new { id = novaCasa.Id }, novaCasa);
         }
 
         // DELETE: api/Casa/5
@@ -145,9 +152,9 @@ namespace NeoImobSystem_API.Controllers
             return NoContent();
         }
 
-        private bool VerificaCasa(uint id)
+        private async Task<bool> VerificaCasa(uint id)
         {
-            return _context.Casas.Any(e => e.Id == id);
+            return await _context.Casas.AnyAsync(e => e.Id == id);
         }
     }
 }

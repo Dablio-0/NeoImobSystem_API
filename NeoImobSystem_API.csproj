@@ -7,6 +7,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="DTO\EditarCasaDTO.cs" />
+	  <Compile Remove="DTO\EditarContratoDTO.cs" />
+	  <Compile Remove="DTO\EditarInquilinoDTO.cs" />
+	  <Compile Remove="DTO\EditarProprietarioDTO.cs" />
+	  <Compile Remove="DTO\EditarUsuarioDTO.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.6" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.6" />
